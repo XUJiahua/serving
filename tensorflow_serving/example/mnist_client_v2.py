@@ -143,12 +143,13 @@ def do_inference(hostport, work_dir, concurrency, num_tests):
   result_counter = _ResultCounter(num_tests, concurrency)
   for _ in range(num_tests):
     request = predict_pb2.PredictRequest()
-    # name?
+    # use model_name: tensorflow_model_server --port=9000 --model_name=mnist --model_base_path=/tmp/mnist2 
     request.model_spec.name = 'mnist'
-    #request.model_spec.signature_name = 'predict'
+    # use method name defined in signature_def_map(in model export script)
     request.model_spec.signature_name = 'predict_images'
     image, label = test_data_set.next_batch(1)
     request.inputs['inputs'].CopyFrom(
+	# shape should match model input shape
         tf.contrib.util.make_tensor_proto(image[0], shape=[1, 28, 28,1]))
     result_counter.throttle()
     result_future = stub.Predict.future(request, 5.0)  # 5 seconds
