@@ -52,3 +52,26 @@ See [install instructions](tensorflow_serving/g3doc/setup.md).
 
 * [Serving architecture overview](tensorflow_serving/g3doc/architecture_overview.md)
 * [TensorFlow website](http://tensorflow.org)
+
+# Generate gRPC for Go
+
+```
+git clone git@github.com:tensorflow/serving.git
+cd serving
+ 
+// *.proto depends on tensorflow
+git clone --recursive https://github.com/tensorflow/tensorflow.git
+mv tensorflow tensorflow_
+mv tensorflow_/tensorflow tensorflow
+ 
+// golang
+mkdir go
+protoc ./tensorflow_serving/apis/*.proto --go_out=plugins=grpc:go --proto_path=.
+ 
+// python
+mkdir python
+python -m grpc.tools.protoc ./tensorflow_serving/apis/*.proto --python_out=python --grpc_python_out=python --proto_path=.
+
+// others...
+
+```
